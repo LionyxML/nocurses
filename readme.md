@@ -5,7 +5,7 @@ This library provides terminal manipulation capability by the use of VT100 ESC s
 
 It is aimed to simple applications where ncurses is simple "too much".
 
-Inspired on the old Borland conio.h for DOS.
+Inspired by the old Borland conio.h for DOS.
 
 
 Functions Provided
@@ -17,9 +17,9 @@ Functions Provided
 | gotoxy(x, y)             | Sets the cursor do the position x, y. Where x is the row number and y the line number. |    gotoxy(10,25);    |
 | setfontcolor(color_name) | Sets the text color to one of the colors described on the color table below.           | setfontcolor(RED);   |
 | setbgrcolor(color_name)  | Sets the background color to one of the colors described on the color table below.     | setbgrcolor(BLUE);   |
-| setfontbold(status)      | Sets the bold atribute on or off. status can be TRUE or FALSE.                         | setfontbold(TRUE);   |
-| setunderline(status)     | Sets the underline atribute on or off. status can be TRUE or FALSE.                    | setunderline(FALSE); |
-| setblink(status)         | Sets the blink atribute on or off. status can be TRUE or FALSE.                        | setblink(TRUE);      |
+| setfontbold(status)      | Sets the bold attribute on or off. status can be TRUE or FALSE.                         | setfontbold(TRUE);   |
+| setunderline(status)     | Sets the underline attribute on or off. status can be TRUE or FALSE.                    | setunderline(FALSE); |
+| setblink(status)         | Sets the blink attribute on or off. status can be TRUE or FALSE.                        | setblink(TRUE);      |
 | clrline()                | Clears the row contents.                                                               | clrline();           |
 
 
