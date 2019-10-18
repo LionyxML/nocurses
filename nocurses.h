@@ -81,3 +81,4 @@ void setblink(int status){
 void clrline(){
     printf("%c[2K%cE", ESC, ESC);
 }
+
