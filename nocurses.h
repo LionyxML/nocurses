@@ -5,7 +5,7 @@
 
   Author     - Rahul M. Juliato
   Original   - 25 jun 2005
-  Revision   - 17 oct 2019
+  Revision   -    oct 2019
 */
 
 #include <stdio.h>
@@ -24,9 +24,9 @@
 #define FALSE   0
 
 
-int GdBgColor   = 47,
-    GdFontColor = 30,
-    GdFontBold  = 0 ;
+int bg_color   = BLACK,
+    font_color = WHITE,
+    font_bold  = FALSE;
 
 
 void pause(){
@@ -46,39 +46,43 @@ void gotoxy(int x, int y){
 
 void setfontcolor(int color){
     printf("%c[3%dm", ESC, color);
-    GdFontColor = color;
+    font_color = color;
 }
 
 void setbgrcolor(int color){
     printf("%c[4%dm", ESC, color);
-    GdBgColor = color;
+    bg_color = color;
 }
 
 
 void setfontbold(int status){
     printf("%c[%dm", ESC, status);
-    GdFontBold = status;
-    setfontcolor(GdFontColor);
-    setbgrcolor(GdBgColor);
+    font_bold = status;
+    setfontcolor(font_color);
+    setbgrcolor(bg_color);
 }
 
 void setunderline(int status){
     if (status) status = 4;
     printf("%c[%dm", ESC, status);
-    setfontcolor(GdFontColor);
-    setbgrcolor(GdBgColor);
-    setfontbold(GdFontBold);
+    setfontcolor(font_color);
+    setbgrcolor(bg_color);
+    setfontbold(font_bold);
 }
 
 void setblink(int status){
     if (status) status = 5;
     printf("%c[%dm", ESC, status);
-    setfontcolor(GdFontColor);
-    setbgrcolor(GdBgColor);
-    setfontbold(GdFontBold);
+    setfontcolor(font_color);
+    setbgrcolor(bg_color);
+    setfontbold(font_bold);
 }
 
 void clrline(){
     printf("%c[2K%cE", ESC, ESC);
+}
+
+void resetcolors(){
+    printf("%c001b%c[0m", ESC, ESC);
 }
 

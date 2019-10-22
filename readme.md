@@ -1,5 +1,4 @@
-nocurses.h
-----------
+# nocurses.h
 
 This library provides terminal manipulation capability by the use of VT100 ESC sequences. 
 
@@ -7,9 +6,10 @@ It is aimed to simple applications where ncurses is simple "too much".
 
 Inspired by the old Borland conio.h for DOS.
 
+Here's a demo (demo.c file avaiable in the same repo):
+![nocurses.h](img/nocurses.gif)
 
-Functions Provided
-------------------
+## Functions Provided
 | Function                 |                                       Description                                      |        Example       |
 |--------------------------|:--------------------------------------------------------------------------------------:|:--------------------:|
 | pause()                  |                           Waits for the user to hit [ENTER].                           |       pause();       |
@@ -21,11 +21,10 @@ Functions Provided
 | setunderline(status)     | Sets the underline attribute on or off. status can be TRUE or FALSE.                    | setunderline(FALSE); |
 | setblink(status)         | Sets the blink attribute on or off. status can be TRUE or FALSE.                        | setblink(TRUE);      |
 | clrline()                | Clears the row contents.                                                               | clrline();           |
+| resetcolors()            | Reset terminal to default colors.                                                      | clrline();           |
 
 
-
-color_name
-----------
+## color_name
 
 Valid color names are:
 
