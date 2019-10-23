@@ -23,6 +23,8 @@ Here's a demo (demo.c file avaiable in the same repo):
 | settitle(title)          | Sets the title of the terminal.                                                        | settitle("Hello World"); |
 | setcurshape(shape_name)  | Sets the shape of the cursor in the terminal in the shape table below.                 | setcurshape(BAR);        |
 | gettermsize()            | Gets the columns and rows of the terminal.                                             | gettermsize();           |
+| getch()                  | Gets a character without waiting for enter.                                            | getch();                 |
+| getche()                 | Gets a character and echoes it without waiting for enter.                              | getche();                |
 | clrline()                | Clears the row contents.                                                               | clrline();               |
 | resetcolors()            | Reset terminal to default colors.                                                      | clrline();               |
 

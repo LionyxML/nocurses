@@ -9,7 +9,6 @@
 */
 
 #include <stdio.h>
-// for getting term size
 #ifdef _WIN32
 # include <windows.h>
 #elif defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__) || defined(__linux__)
@@ -17,6 +16,7 @@
 #  define __unix__
 # endif
 # include <sys/ioctl.h>
+# include <termios.h>
 # include <unistd.h>
 #endif
 
@@ -53,7 +53,7 @@ static int bg_color = BLACK,
 
 
 static void wait(){
-    fgetc(stdin);
+    while (fgetc(stdin) != '\n');
 }
 
 
@@ -128,6 +128,64 @@ static struct termsize gettermsize(){
     size.rows = 0;
 #endif
     return size;
+}
+
+static int getch(){
+#ifdef _WIN32
+    HANDLE input = GetStdHandle(STD_INPUT_HANDLE);
+    if (h == NULL) return EOF;
+
+    DWORD oldmode;
+    GetConsoleMode(input, &oldmode);
+    DWORD newmode = oldmode & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+    SetConsoleMode(input, newmode);
+#elif defined(__unix__)
+    struct termios oldattr, newattr;
+    tcgetattr(STDIN_FILENO, &oldattr);
+
+    newattr = oldattr;
+    newattr.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
+#endif
+
+    int ch = getc(stdin);
+
+#ifdef _WIN32
+    SetConsoleMode(input, oldmode);
+#elif defined(__unix__)
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
+#endif
+
+    return ch;
+}
+
+static int getche(){
+#ifdef _WIN32
+    HANDLE input = GetStdHandle(STD_INPUT_HANDLE);
+    if (h == NULL) return EOF;
+
+    DWORD oldmode;
+    GetConsoleMode(input, &oldmode);
+    DWORD newmode = oldmode & ~ENABLE_LINE_INPUT;
+    SetConsoleMode(input, newmode);
+#elif defined(__unix__)
+    struct termios oldattr, newattr;
+    tcgetattr(STDIN_FILENO, &oldattr);
+
+    newattr = oldattr;
+    newattr.c_lflag &= ~ICANON;
+    tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
+#endif
+
+    int ch = getc(stdin);
+
+#ifdef _WIN32
+    SetConsoleMode(input, oldmode);
+#elif defined(__unix__)
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
+#endif
+
+    return ch;
 }
 
 static void clrline(){

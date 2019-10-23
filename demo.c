@@ -116,6 +116,14 @@ gettermsize()\n");
   }
   waiting();
 
+  printf("I have getch() and getche()! Here is getch() until you press q:\n\nPress q to exit:");
+  while (getch() != 'q');
+  clrscr();
+
+  printf("Here is getche() until you press q:\n\nPress q to exit:");
+  while (getche() != 'q');
+
+
   clrscr();
   printf("Now some fancy stuff. \n\nThis may or may not work in your terminal emulator,\n so I am going to TRY stuff, ok?\n\n");
   waiting();
