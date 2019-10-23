@@ -9,8 +9,19 @@
 */
 
 #include <stdio.h>
+#ifdef _WIN32
+# include <windows.h>
+#elif defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__) || defined(__linux__)
+# ifndef __unix__
+#  define __unix__
+# endif
+# include <sys/ioctl.h>
+# include <termios.h>
+# include <unistd.h>
+#endif
 
-#define ESC    27
+#define ESC    "\x1b"
+
 #define BLACK   0
 #define RED     1
 #define GREEN   2
@@ -20,69 +31,168 @@
 #define CYAN    6
 #define WHITE   7
 
+#define BLOCK_BLINK     1
+#define BLOCK           2
+#define UNDERLINE_BLINK 3
+#define UNDERLINE       4
+#define BAR_BLINK       5
+#define BAR             6
+
 #define TRUE    1
 #define FALSE   0
 
+struct termsize {
+    int cols;
+    int rows;
+};
 
-int bg_color   = BLACK,
-    font_color = WHITE,
-    font_bold  = FALSE;
+
+static int bg_color = BLACK,
+         font_color = WHITE,
+         font_bold  = FALSE;
 
 
-void pause(){
-    fgetc(stdin);
+static void wait(){
+    while (fgetc(stdin) != '\n');
 }
 
 
-void clrscr(){
-    printf("%c[2J%c[?6h", ESC, ESC);
+static void clrscr(){
+    printf(ESC"[2J"ESC"[?6h");
 }
 
 
-void gotoxy(int x, int y){
-    printf("%c[%d;%dH", ESC, y, x);
+static void gotoxy(int x, int y){
+    printf(ESC"[%d;%dH", y, x);
 }
 
 
-void setfontcolor(int color){
-    printf("%c[3%dm", ESC, color);
+static void setfontcolor(int color){
+    printf(ESC"[3%dm", color);
     font_color = color;
 }
 
-void setbgrcolor(int color){
-    printf("%c[4%dm", ESC, color);
+static void setbgrcolor(int color){
+    printf(ESC"[4%dm", color);
     bg_color = color;
 }
 
 
-void setfontbold(int status){
-    printf("%c[%dm", ESC, status);
+static void setfontbold(int status){
+    printf(ESC"[%dm", status);
     font_bold = status;
     setfontcolor(font_color);
     setbgrcolor(bg_color);
 }
 
-void setunderline(int status){
+static void setunderline(int status){
     if (status) status = 4;
-    printf("%c[%dm", ESC, status);
+    printf(ESC"[%dm", status);
     setfontcolor(font_color);
     setbgrcolor(bg_color);
     setfontbold(font_bold);
 }
 
-void setblink(int status){
+static void setblink(int status){
     if (status) status = 5;
-    printf("%c[%dm", ESC, status);
+    printf(ESC"[%dm", status);
     setfontcolor(font_color);
     setbgrcolor(bg_color);
     setfontbold(font_bold);
 }
 
-void clrline(){
-    printf("%c[2K%cE", ESC, ESC);
+static void settitle(char const* title) {
+    printf(ESC"]0;%s\x7", title);
 }
 
-void resetcolors(){
-    printf("%c001b%c[0m", ESC, ESC);
+static void setcurshape(int shape){
+    // vt520/xterm-style; linux terminal uses ESC[?1;2;3c, not implemented
+    printf(ESC"[%d q", shape);
+}
+
+static struct termsize gettermsize(){
+    struct termsize size;
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    size.cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    size.rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+#elif defined(__unix__)
+    struct winsize win;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
+    size.cols = win.ws_col;
+    size.rows = win.ws_row;
+#else
+    size.cols = 0;
+    size.rows = 0;
+#endif
+    return size;
+}
+
+static int getch(){
+#ifdef _WIN32
+    HANDLE input = GetStdHandle(STD_INPUT_HANDLE);
+    if (h == NULL) return EOF;
+
+    DWORD oldmode;
+    GetConsoleMode(input, &oldmode);
+    DWORD newmode = oldmode & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+    SetConsoleMode(input, newmode);
+#elif defined(__unix__)
+    struct termios oldattr, newattr;
+    tcgetattr(STDIN_FILENO, &oldattr);
+
+    newattr = oldattr;
+    newattr.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
+#endif
+
+    int ch = getc(stdin);
+
+#ifdef _WIN32
+    SetConsoleMode(input, oldmode);
+#elif defined(__unix__)
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
+#endif
+
+    return ch;
+}
+
+static int getche(){
+#ifdef _WIN32
+    HANDLE input = GetStdHandle(STD_INPUT_HANDLE);
+    if (h == NULL) return EOF;
+
+    DWORD oldmode;
+    GetConsoleMode(input, &oldmode);
+    DWORD newmode = oldmode & ~ENABLE_LINE_INPUT;
+    SetConsoleMode(input, newmode);
+#elif defined(__unix__)
+    struct termios oldattr, newattr;
+    tcgetattr(STDIN_FILENO, &oldattr);
+
+    newattr = oldattr;
+    newattr.c_lflag &= ~ICANON;
+    tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
+#endif
+
+    int ch = getc(stdin);
+
+#ifdef _WIN32
+    SetConsoleMode(input, oldmode);
+#elif defined(__unix__)
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
+#endif
+
+    return ch;
+}
+
+static void clrline(){
+    printf(ESC"[2K"ESC"E");
+}
+
+static void resetcolors(){
+    printf(ESC"001b"ESC"[0m");
 }
 

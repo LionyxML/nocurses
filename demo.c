@@ -3,7 +3,7 @@
 
    nocurses.h - nocurses library demo
 
-   Compile and run with: $gcc -pthread -lm -o demo demo.c && ./demo
+   Compile and run with: $ make demo && ./demo
 
 */
 
@@ -15,7 +15,7 @@ int i;
 
 int waiting(){
   printf("\n\nHit ENTER to continue...");
-  pause();
+  wait();
   clrscr();
   return 0;
 }
@@ -56,21 +56,22 @@ int main(void) {
   setfontcolor(WHITE);
   
   printf("\n\n\nHello! Welcome to nocurses.h demo!\nLet me present you its features... \n");
-
   waiting();
 
   printf("The nocurses.h provides these set of functions:\n\n\
-pause()\n\
+wait()\n\
 clrscr()\n\
 setfontcolor(COLOR_NAME)\n\
 setbgrcolor(COLOR_NAME)\n\
 gotoxy(XPOS,YPOS)\n\
 setfontbold(STATE)\n\
 setunderline(STATE)\n\
-setblink(STATE)\n");
+setblink(STATE)\n\
+settitle(TITLE)\n\
+gettermsize()\n");
   waiting();
 
-  printf("I am using the pause() function to wait for your\ncommand.");
+  printf("I am using the wait() function to wait for your\ncommand.");
   waiting();
 
   printf("See it? The screen was cleared with the clrscr() funciton.");
@@ -105,9 +106,23 @@ setblink(STATE)\n");
 
   resetcolors();
   clrscr();
-
   printf("Now I used resetcolors()");
   waiting();
+
+  struct termsize size = gettermsize();
+  printf("I can detect your terminal size.\n\nThis terminal is %d columns and %d rows, so one line should look like this:\n\n", size.cols, size.rows);
+  for (int i=0;i<size.cols;i++) {
+	  printf("=");
+  }
+  waiting();
+
+  printf("I have getch() and getche()! Here is getch() until you press q:\n\nPress q to exit:");
+  while (getch() != 'q');
+  clrscr();
+
+  printf("Here is getche() until you press q:\n\nPress q to exit:");
+  while (getche() != 'q');
+
 
   clrscr();
   printf("Now some fancy stuff. \n\nThis may or may not work in your terminal emulator,\n so I am going to TRY stuff, ok?\n\n");
@@ -138,6 +153,22 @@ setblink(STATE)\n");
 
   setblink(FALSE);
   printf("Blinking cursor is set to FALSE --> setblink(FALSE)\n\n");
+  waiting();
+
+  settitle("nocurses demo");
+  printf("Title is set to \"nocurses demo\" --> settitle(\"nocurses demo\")\n\n");
+  waiting();
+
+  setcurshape(BLOCK);
+  printf("Cursor is set to BLOCK --> setcurshape(BLOCK)\n\n");
+  waiting();
+
+  setcurshape(UNDERLINE);
+  printf("Cursor is set to UNDERLINE --> setcurshape(UNDERLINE)\n\n");
+  waiting();
+
+  setcurshape(BAR);
+  printf("Cursor is set to BAR --> setcurshape(BAR)\n\n");
   waiting();
 
   printf("\n\nThat's all! Simple nocurses.h\n\nContribute with it on https://github.com/LionyxML/nocurses/\n\n");
