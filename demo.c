@@ -121,7 +121,7 @@ setblink(STATE)\n");
   waiting();
 
   setfontbold(FALSE);
-  printf("BOLD is set fo FALSE --> setfontbold(FALSE)\n\n");
+  printf("BOLD is set to FALSE --> setfontbold(FALSE)\n\n");
   waiting();
 
   setunderline(TRUE);
