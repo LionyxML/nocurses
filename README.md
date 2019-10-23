@@ -7,6 +7,7 @@ It is aimed to simple applications where ncurses is simple "too much".
 Inspired by the old Borland conio.h for DOS.
 
 Here's a demo (demo.c file avaiable in the same repo):
+
 ![nocurses.h](img/nocurses.gif)
 
 ## Functions Provided
