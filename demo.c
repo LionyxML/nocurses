@@ -68,7 +68,12 @@ setfontbold(STATE)\n\
 setunderline(STATE)\n\
 setblink(STATE)\n\
 settitle(TITLE)\n\
-gettermsize()\n");
+setcurshape(SHAPE_NAME)\n\
+gettermsize()\n\
+getch()\n\
+getche()\n\
+clrline()\n\
+resetcolors()\n");
   waiting();
 
   printf("I am using the wait() function to wait for your\ncommand.");
