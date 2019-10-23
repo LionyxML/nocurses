@@ -3,7 +3,7 @@
 
    nocurses.h - nocurses library demo
 
-   Compile and run with: $gcc -pthread -lm -o demo demo.c && ./demo
+   Compile and run with: $ make demo && ./demo
 
 */
 

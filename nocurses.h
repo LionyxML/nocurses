@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-#define ESC    27
+#define ESC    "\x1b"
 #define BLACK   0
 #define RED     1
 #define GREEN   2
@@ -24,65 +24,65 @@
 #define FALSE   0
 
 
-int bg_color   = BLACK,
-    font_color = WHITE,
-    font_bold  = FALSE;
+static int bg_color = BLACK,
+         font_color = WHITE,
+         font_bold  = FALSE;
 
 
-void pause(){
+static void pause(){
     fgetc(stdin);
 }
 
 
-void clrscr(){
-    printf("%c[2J%c[?6h", ESC, ESC);
+static void clrscr(){
+    printf(ESC"[2J"ESC"[?6h");
 }
 
 
-void gotoxy(int x, int y){
-    printf("%c[%d;%dH", ESC, y, x);
+static void gotoxy(int x, int y){
+    printf(ESC"[%d;%dH", y, x);
 }
 
 
-void setfontcolor(int color){
-    printf("%c[3%dm", ESC, color);
+static void setfontcolor(int color){
+    printf(ESC"[3%dm", color);
     font_color = color;
 }
 
-void setbgrcolor(int color){
-    printf("%c[4%dm", ESC, color);
+static void setbgrcolor(int color){
+    printf(ESC"[4%dm", color);
     bg_color = color;
 }
 
 
-void setfontbold(int status){
-    printf("%c[%dm", ESC, status);
+static void setfontbold(int status){
+    printf(ESC"[%dm", status);
     font_bold = status;
     setfontcolor(font_color);
     setbgrcolor(bg_color);
 }
 
-void setunderline(int status){
+static void setunderline(int status){
     if (status) status = 4;
-    printf("%c[%dm", ESC, status);
+    printf(ESC"[%dm", status);
     setfontcolor(font_color);
     setbgrcolor(bg_color);
     setfontbold(font_bold);
 }
 
-void setblink(int status){
+static void setblink(int status){
     if (status) status = 5;
-    printf("%c[%dm", ESC, status);
+    printf(ESC"[%dm", status);
     setfontcolor(font_color);
     setbgrcolor(bg_color);
     setfontbold(font_bold);
 }
 
-void clrline(){
-    printf("%c[2K%cE", ESC, ESC);
+static void clrline(){
+    printf(ESC"[2K"ESC"E");
 }
 
-void resetcolors(){
-    printf("%c001b%c[0m", ESC, ESC);
+static void resetcolors(){
+    printf(ESC"001b"ESC"[0m");
 }
 
