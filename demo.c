@@ -79,7 +79,7 @@ resetcolors()\n");
   printf("I am using the wait() function to wait for your\ncommand.");
   waiting();
 
-  printf("See it? The screen was cleared with the clrscr() funciton.");
+  printf("See it? The screen was cleared with the clrscr() function.");
   waiting(); 
 
   gotoxy(5, 6);
