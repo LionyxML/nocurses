@@ -1,6 +1,6 @@
 # nocurses.h
 
-This library provides terminal manipulation capability by the use of VT100 ESC sequences. 
+This library provides terminal manipulation capability by the use of VT100 ESC sequences.
 
 It is aimed to simple applications where ncurses is simple "too much".
 
@@ -27,7 +27,7 @@ Here's a demo (demo.c file avaiable in the same repo):
 | getch()                  | Gets a character without waiting for enter.                                            | getch();                 |
 | getche()                 | Gets a character and echoes it without waiting for enter.                              | getche();                |
 | clrline()                | Clears the row contents.                                                               | clrline();               |
-| resetcolors()            | Reset terminal to default colors.                                                      | clrline();               |
+| resetcolors()            | Reset terminal to default colors.                                                      | resetcolors();           |
 
 
 ## color_name
@@ -57,4 +57,3 @@ Valid shape names are:
 | UNDERLINE       |
 | BAR_BLINK       |
 | BAR             |
-
